@@ -50,10 +50,13 @@ pipeline {
 
             steps {
                 sh '''
+                    npm ci
                     npm install serve
-                    node_modules/.bin/serve -s build &
+                    npx serve -s build & SERVER_PID=$!
                     sleep 10
                     npx playwright test
+                    kill $SERVER_PID
+                    npx playwright test --reporter=html
                 '''
             }
         }
